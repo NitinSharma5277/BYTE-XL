@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    
+</head>
+<body>
+    <h2>Product Input Fields</h2>
+    <br><br>
+    <input type="number" id="productid" placeholder="Enter product ID">
+    <br><br>
+    <input type="text" id="productname" placeholder="Enter product name">
+    <br><br>
+    <input type="number" id="productprice" placeholder="Enter product price">
+    <br><br>
+    <input type="text" id="productcategory" placeholder="Enter product category">
+    <br><br>
+    <button onclick="addProduct()">Add Product</button>
+    <br><br>
+    <label for="categorydropdown"><b>Filter by Category</b></label>
+    <br>
+    <select id="categorydropdown" onchange="filterByCategory()">
+        <option value="all">--- All Categories ---</option>
+    </select>
+    <br><br>
+    <table id="producttable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody id="producttablebody">
+        </tbody>
+    </table>
+    <script>
+        let products = [];
+        let categories = new Set();
+        
+        function addProduct() {
+            const id = document.getElementById('productid').value;
+            const name = document.getElementById('productname').value;
+            const price = document.getElementById('productprice').value;
+            const category = document.getElementById('productcategory').value;
+
+            if (!id || !name || !price || !category) {
+                alert("Please fill all the required fields.");
+                return;
+            }
+
+            const product = { id, name, price, category };
+            products.push(product);
+
+            if (!categories.has(category)) {
+                categories.add(category);
+                const option = document.createElement('option');
+                option.value = category;
+                option.text = category;
+                document.getElementById('categorydropdown').appendChild(option);
+            }
+
+            document.getElementById('productid').value = "";
+            document.getElementById('productname').value = "";
+            document.getElementById('productprice').value = "";
+            document.getElementById('productcategory').value = "";
+            
+            displayProducts(products);
+        }
+
+        function displayProducts(list) {
+            const tbody = document.getElementById('producttablebody');
+            tbody.innerHTML = "";
+            list.forEach(p => {
+                const row = `<tr>
+                                <td>${p.id}</td>
+                                <td>${p.name}</td>
+                                <td>${p.price}</td>
+                                <td>${p.category}</td>
+                            </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function filterByCategory() {
+            const selectedCategory = document.getElementById('categorydropdown').value;
+            let filteredProducts;
+            if (selectedCategory === "all") {
+                filteredProducts = products;
+            } else {
+                filteredProducts = products.filter(p => p.category === selectedCategory);
+            }
+            displayProducts(filteredProducts);
+        }
+    </script>
+</body>
+</html>
